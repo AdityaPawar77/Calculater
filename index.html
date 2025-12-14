@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aditya Calculator</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .calc {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+    }
+
+    .display {
+      width: 100%;
+      height: 120px;
+      font-size: 3rem;
+      border: none;
+      outline: none;
+      text-align: right;
+      padding: 20px;
+      color: black;
+      background: white;
+    }
+
+    .placeholder {
+      position: absolute;
+      top: 45px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #8c8c8c;   /* faint black */
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: #e0e0e0;
+      margin-bottom: 15px;
+    }
+
+    .keys {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    button {
+      padding: 18px;
+      font-size: 1.4rem;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      background: #f2f2f2;
+      transition: 0.1s;
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    .operator {
+      color: #ff7a00;
+    }
+
+    .equals {
+      background: #ff7a00;
+      color: white;
+      border-radius: 50px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calc">
+
+    <!-- Display Section -->
+    <div style="position: relative;">
+      <div class="placeholder" id="placeholder">Made By ADITYA PAWAR</div>
+      <input type="text" id="display" class="display" readonly value="">
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Buttons -->
+    <div class="keys">
+      <button class="operator" data-action="clear">AC</button>
+      <button class="operator" data-action="del">⌫</button>
+      <button class="operator" data-value="%">%</button>
+      <button class="operator" data-value="/">÷</button>
+
+      <button data-value="7">7</button>
+      <button data-value="8">8</button>
+      <button data-value="9">9</button>
+      <button class="operator" data-value="*">×</button>
+
+      <button data-value="4">4</button>
+      <button data-value="5">5</button>
+      <button data-value="6">6</button>
+      <button class="operator" data-value="-">−</button>
+
+      <button data-value="1">1</button>
+      <button data-value="2">2</button>
+      <button data-value="3">3</button>
+      <button class="operator" data-value="+">+</button>
+
+      <button data-value="0">0</button>
+      <button data-value=".">.</button>
+      <button class="equals" data-action="equals" style="grid-column: span 2;">=</button>
+    </div>
+  </div>
+
+<script>
+  const display = document.getElementById("display");
+  const placeholder = document.getElementById("placeholder");
+
+  document.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const v = btn.dataset.value;
+      const action = btn.dataset.action;
+
+      // Hide placeholder when typing
+      if (v !== undefined) placeholder.style.display = "none";
+
+      if (v !== undefined) {
+        display.value += v;
+      } 
+      else if (action === "clear") {
+        display.value = "";
+        placeholder.style.display = "block";  // show name again
+      } 
+      else if (action === "del") {
+        display.value = display.value.slice(0, -1);
+        if (display.value === "") {
+          placeholder.style.display = "block";
+        }
+      } 
+      else if (action === "equals") {
+        try {
+          if (!/^[0-9+\-*/.%()\s]+$/.test(display.value)) throw "Invalid";
+          display.value = Function('"use strict";return (' + display.value + ')')();
+        } catch {
+          display.value = "Error";
+          setTimeout(() => {
+            display.value = "";
+            placeholder.style.display = "block";
+          }, 800);
+        }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
